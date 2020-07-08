@@ -1,0 +1,66 @@
+type Query {
+  login(email: String!, password: String!): AuthPayload!
+  user(id: ID!): User!
+  users(filter: Int): [User!]!
+  post(id: ID!): Post!
+  drafts: [Post!]!
+  posts: [Post!]!
+}
+
+type Mutation {
+  signUp(
+    fullName: String!
+    email: String!
+    password: String!
+    role: Role
+  ): User!
+  updateUser(email: String, fullName: String, image: String, bio: String): User!
+  createDraft(title: String!, content: String!, image: String): Post!
+  updateDraft(id: ID!, title: String, content: String, image: String): Post!
+  deletePost(id: ID!): Post!
+  publish(id: ID!): Post!
+  vote(id: ID!): Vote!
+}
+
+type AuthPayload {
+  token: String!
+}
+
+type User {
+  _id: ID!
+  fullName: String!
+  email: String!
+  posts: [Post!]!
+  bio: String
+  image: String
+  role: Role!
+  createdAt: String!
+}
+
+type Post {
+  _id: ID!
+  title: String!
+  content: String!
+  image: String
+  published: Boolean!
+  votes: [Vote!]!
+  publishedDate: String
+  createdAt: String!
+  updatedAt: String!
+  author: User!
+}
+
+type Vote {
+  userId: String!
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Sort {
+  ascending
+  descending
+  published
+}
