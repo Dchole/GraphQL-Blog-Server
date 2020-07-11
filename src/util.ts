@@ -1,7 +1,7 @@
 import { verify } from "jsonwebtoken";
 
-export function getUserId(context) {
-  const Authorization = context.request.get("Authorization");
+export function getUserId(request) {
+  const Authorization = request.get("Authorization");
   if (Authorization) {
     const token = Authorization.replace("Bearer ", "");
     // @ts-ignore
