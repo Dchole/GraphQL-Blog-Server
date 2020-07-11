@@ -22,6 +22,11 @@ type Mutation {
   vote(id: ID!): Vote!
 }
 
+type Subscription {
+  newPost: Post
+  newVote: Vote
+}
+
 type AuthPayload {
   token: String!
 }

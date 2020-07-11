@@ -129,6 +129,12 @@ export enum Sort {
   Published = 'published'
 }
 
+export type Subscription = {
+  __typename?: 'Subscription';
+  newPost?: Maybe<Post>;
+  newVote?: Maybe<Vote>;
+};
+
 export type User = {
   __typename?: 'User';
   _id: Scalars['ID'];
@@ -235,6 +241,7 @@ export type ResolversTypes = {
   Role: Role;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Mutation: ResolverTypeWrapper<{}>;
+  Subscription: ResolverTypeWrapper<{}>;
   Sort: Sort;
 };
 
@@ -250,6 +257,7 @@ export type ResolversParentTypes = {
   Vote: Vote;
   Int: Scalars['Int'];
   Mutation: {};
+  Subscription: {};
 };
 
 export type AuthPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuthPayload'] = ResolversParentTypes['AuthPayload']> = {
@@ -290,6 +298,11 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   posts?: Resolver<Array<ResolversTypes['Post']>, ParentType, ContextType>;
 };
 
+export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
+  newPost?: SubscriptionResolver<Maybe<ResolversTypes['Post']>, "newPost", ParentType, ContextType>;
+  newVote?: SubscriptionResolver<Maybe<ResolversTypes['Vote']>, "newVote", ParentType, ContextType>;
+};
+
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   fullName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -312,6 +325,7 @@ export type Resolvers<ContextType = any> = {
   Mutation?: MutationResolvers<ContextType>;
   Post?: PostResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Subscription?: SubscriptionResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   Vote?: VoteResolvers<ContextType>;
 };
