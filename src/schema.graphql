@@ -48,7 +48,7 @@ type Post {
   content: String!
   image: String
   published: Boolean!
-  votes: [Vote!]!
+  votes: [String!]!
   publishedDate: String
   createdAt: String!
   updatedAt: String!
