@@ -21,8 +21,25 @@ const Query: QueryResolvers = {
     await User.find().select("-password").populate("posts"),
   post: async (_parent, { id }, _ctx) =>
     await Post.findById(id).populate("author"),
-  posts: async (_parent, _args, _ctx) =>
-    await Post.find({ published: true }).populate("author"),
+  posts: async (_parent, args, { request }) => {
+    const userId = args.currentUser ? getUserId(request) : args.author;
+
+    const posts = await Post.find(
+      // @ts-ignore
+      userId
+        ? {
+            published: true,
+            author: { _id: userId }
+          }
+        : { published: true }
+    )
+      .populate("author")
+      .sort("-publishedDate")
+      .skip(args.skip)
+      .limit(args.limit);
+
+    return posts;
+  },
   drafts: async (_parent, _args, context) => {
     const userId = getUserId(context);
     return await Post.find({ author: userId, published: false }).populate(

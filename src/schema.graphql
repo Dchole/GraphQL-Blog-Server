@@ -1,10 +1,17 @@
 type Query {
   login(email: String!, password: String!): AuthPayload!
   user(id: ID!): User!
-  users(filter: Int): [User!]!
+  users: [User!]!
   post(id: ID!): Post!
   drafts: [Post!]!
-  posts: [Post!]!
+  posts(
+    filter: String
+    author: ID
+    currentUser: Boolean
+    sortBy: Sort
+    skip: Int!
+    limit: Int!
+  ): [Post!]!
 }
 
 type Mutation {
@@ -37,6 +44,7 @@ type User {
   email: String!
   posts: [Post!]!
   bio: String
+  tags: [String!]!
   image: String
   role: Role!
   createdAt: String!
@@ -47,6 +55,7 @@ type Post {
   title: String!
   content: String!
   image: String
+  tags: [String!]!
   published: Boolean!
   votes: [String!]!
   publishedDate: String
@@ -65,7 +74,6 @@ enum Role {
 }
 
 enum Sort {
-  ascending
-  descending
-  published
+  published_date
+  popular
 }

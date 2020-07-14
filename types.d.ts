@@ -79,8 +79,9 @@ export type Post = {
   title: Scalars['String'];
   content: Scalars['String'];
   image?: Maybe<Scalars['String']>;
+  tags: Array<Scalars['String']>;
   published: Scalars['Boolean'];
-  votes: Array<Vote>;
+  votes: Array<Scalars['String']>;
   publishedDate?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -109,13 +110,18 @@ export type QueryUserArgs = {
 };
 
 
-export type QueryUsersArgs = {
-  filter?: Maybe<Scalars['Int']>;
+export type QueryPostArgs = {
+  id: Scalars['ID'];
 };
 
 
-export type QueryPostArgs = {
-  id: Scalars['ID'];
+export type QueryPostsArgs = {
+  filter?: Maybe<Scalars['String']>;
+  author?: Maybe<Scalars['ID']>;
+  currentUser?: Maybe<Scalars['Boolean']>;
+  sortBy?: Maybe<Sort>;
+  skip: Scalars['Int'];
+  limit: Scalars['Int'];
 };
 
 export enum Role {
@@ -124,9 +130,8 @@ export enum Role {
 }
 
 export enum Sort {
-  Ascending = 'ascending',
-  Descending = 'descending',
-  Published = 'published'
+  PublishedDate = 'published_date',
+  Popular = 'popular'
 }
 
 export type Subscription = {
@@ -142,6 +147,7 @@ export type User = {
   email: Scalars['String'];
   posts: Array<Post>;
   bio?: Maybe<Scalars['String']>;
+  tags: Array<Scalars['String']>;
   image?: Maybe<Scalars['String']>;
   role: Role;
   createdAt: Scalars['String'];
@@ -237,12 +243,12 @@ export type ResolversTypes = {
   User: ResolverTypeWrapper<User>;
   Post: ResolverTypeWrapper<Post>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
-  Vote: ResolverTypeWrapper<Vote>;
   Role: Role;
+  Sort: Sort;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Mutation: ResolverTypeWrapper<{}>;
+  Vote: ResolverTypeWrapper<Vote>;
   Subscription: ResolverTypeWrapper<{}>;
-  Sort: Sort;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -254,9 +260,9 @@ export type ResolversParentTypes = {
   User: User;
   Post: Post;
   Boolean: Scalars['Boolean'];
-  Vote: Vote;
   Int: Scalars['Int'];
   Mutation: {};
+  Vote: Vote;
   Subscription: {};
 };
 
@@ -280,8 +286,9 @@ export type PostResolvers<ContextType = any, ParentType extends ResolversParentT
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  tags?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   published?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  votes?: Resolver<Array<ResolversTypes['Vote']>, ParentType, ContextType>;
+  votes?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   publishedDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -292,10 +299,10 @@ export type PostResolvers<ContextType = any, ParentType extends ResolversParentT
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   login?: Resolver<ResolversTypes['AuthPayload'], ParentType, ContextType, RequireFields<QueryLoginArgs, 'email' | 'password'>>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
-  users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUsersArgs, never>>;
+  users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   post?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<QueryPostArgs, 'id'>>;
   drafts?: Resolver<Array<ResolversTypes['Post']>, ParentType, ContextType>;
-  posts?: Resolver<Array<ResolversTypes['Post']>, ParentType, ContextType>;
+  posts?: Resolver<Array<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<QueryPostsArgs, 'skip' | 'limit'>>;
 };
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
@@ -309,6 +316,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   posts?: Resolver<Array<ResolversTypes['Post']>, ParentType, ContextType>;
   bio?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  tags?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   role?: Resolver<ResolversTypes['Role'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;

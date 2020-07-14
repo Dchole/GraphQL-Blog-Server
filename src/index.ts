@@ -24,7 +24,7 @@ const server = new GraphQLServer({
     Mutation,
     Subscription
   },
-  context: request => ({ request: request.request, pubsub })
+  context: ({ request }) => ({ request, pubsub })
 });
 
 server.start(() => console.log("🚀 Server running on http://localhost:4000"));
