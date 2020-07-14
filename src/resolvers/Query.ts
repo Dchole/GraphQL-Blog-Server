@@ -34,7 +34,7 @@ const Query: QueryResolvers = {
         : { published: true }
     )
       .populate("author")
-      .sort("-publishedDate")
+      .sort(args.sortBy === "popular" ? "-votes" : "-publishedDate")
       .skip(args.skip)
       .limit(args.limit);
 
