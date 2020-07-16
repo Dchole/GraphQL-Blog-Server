@@ -19,6 +19,7 @@ connect(process.env.DB, {
 const pubsub = new PubSub();
 const server = new GraphQLServer({
   typeDefs: "./src/schema.graphql",
+  // @ts-ignore
   resolvers: {
     Query,
     Mutation,

@@ -15,10 +15,14 @@ const Query: QueryResolvers = {
     const token = sign({ userId: user._id }, process.env.JWT_SECRET);
     return { token };
   },
-  user: async (_parent, { id }, _ctx) =>
-    await User.findById(id).select("-password").populate("posts"),
+  // @ts-ignore
+  user: async (_parent, { id }, { request }) => {
+    const userId = id ? id : getUserId(request);
+    return await User.findById(userId).select("-password").populate("posts");
+  },
   users: async (_parent, _args, _ctx) =>
     await User.find().select("-password").populate("posts"),
+  // @ts-ignore
   post: async (_parent, { id }, _ctx) =>
     await Post.findById(id).populate("author"),
   posts: async (_parent, args, { request }) => {

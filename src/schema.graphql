@@ -1,6 +1,6 @@
 type Query {
   login(email: String!, password: String!): AuthPayload!
-  user(id: ID!): User!
+  user(id: ID): User!
   users: [User!]!
   post(id: ID!): Post!
   drafts: [Post!]!
@@ -30,8 +30,8 @@ type Mutation {
 }
 
 type Subscription {
-  newPost: Post
-  newVote: Vote
+  newVote(id: ID!): Vote!
+  newComment(id: ID!): Comment!
 }
 
 type AuthPayload {
@@ -57,15 +57,25 @@ type Post {
   image: String
   tags: [String!]!
   published: Boolean!
-  votes: [String!]!
+  votes: [ID!]!
+  comments: [Comment!]!
   publishedDate: String
   createdAt: String!
   updatedAt: String!
   author: User!
 }
 
+type Comment {
+  author: User!
+  postId: ID!
+  content: String!
+  publishedDate: String!
+  replies: [Comment!]!
+}
+
 type Vote {
-  userId: String!
+  userId: ID!
+  postId: ID!
 }
 
 enum Role {

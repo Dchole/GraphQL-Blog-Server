@@ -16,6 +16,15 @@ export type AuthPayload = {
   token: Scalars['String'];
 };
 
+export type Comment = {
+  __typename?: 'Comment';
+  author: User;
+  postId: Scalars['ID'];
+  content: Scalars['String'];
+  publishedDate: Scalars['String'];
+  replies: Array<Comment>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   signUp: User;
@@ -81,7 +90,8 @@ export type Post = {
   image?: Maybe<Scalars['String']>;
   tags: Array<Scalars['String']>;
   published: Scalars['Boolean'];
-  votes: Array<Scalars['String']>;
+  votes: Array<Scalars['ID']>;
+  comments: Array<Comment>;
   publishedDate?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -136,8 +146,18 @@ export enum Sort {
 
 export type Subscription = {
   __typename?: 'Subscription';
-  newPost?: Maybe<Post>;
-  newVote?: Maybe<Vote>;
+  newVote: Vote;
+  newComment: Comment;
+};
+
+
+export type SubscriptionNewVoteArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type SubscriptionNewCommentArgs = {
+  id: Scalars['ID'];
 };
 
 export type User = {
@@ -155,7 +175,8 @@ export type User = {
 
 export type Vote = {
   __typename?: 'Vote';
-  userId: Scalars['String'];
+  userId: Scalars['ID'];
+  postId: Scalars['ID'];
 };
 
 
@@ -243,6 +264,7 @@ export type ResolversTypes = {
   User: ResolverTypeWrapper<User>;
   Post: ResolverTypeWrapper<Post>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  Comment: ResolverTypeWrapper<Comment>;
   Role: Role;
   Sort: Sort;
   Int: ResolverTypeWrapper<Scalars['Int']>;
@@ -260,6 +282,7 @@ export type ResolversParentTypes = {
   User: User;
   Post: Post;
   Boolean: Scalars['Boolean'];
+  Comment: Comment;
   Int: Scalars['Int'];
   Mutation: {};
   Vote: Vote;
@@ -268,6 +291,15 @@ export type ResolversParentTypes = {
 
 export type AuthPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuthPayload'] = ResolversParentTypes['AuthPayload']> = {
   token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type CommentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = {
+  author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  postId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  publishedDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  replies?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -288,7 +320,8 @@ export type PostResolvers<ContextType = any, ParentType extends ResolversParentT
   image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   tags?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   published?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  votes?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  votes?: Resolver<Array<ResolversTypes['ID']>, ParentType, ContextType>;
+  comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>;
   publishedDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -306,8 +339,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 };
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
-  newPost?: SubscriptionResolver<Maybe<ResolversTypes['Post']>, "newPost", ParentType, ContextType>;
-  newVote?: SubscriptionResolver<Maybe<ResolversTypes['Vote']>, "newVote", ParentType, ContextType>;
+  newVote?: SubscriptionResolver<ResolversTypes['Vote'], "newVote", ParentType, ContextType, RequireFields<SubscriptionNewVoteArgs, 'id'>>;
+  newComment?: SubscriptionResolver<ResolversTypes['Comment'], "newComment", ParentType, ContextType, RequireFields<SubscriptionNewCommentArgs, 'id'>>;
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
@@ -324,12 +357,14 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type VoteResolvers<ContextType = any, ParentType extends ResolversParentTypes['Vote'] = ResolversParentTypes['Vote']> = {
-  userId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  postId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type Resolvers<ContextType = any> = {
   AuthPayload?: AuthPayloadResolvers<ContextType>;
+  Comment?: CommentResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Post?: PostResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;

@@ -22,8 +22,9 @@ const Mutation: MutationResolvers = {
     const created = await createDraft({ ...args, author });
 
     const user = await User.findById(author);
-    user.posts.push(created._id);
-    user.save();
+
+    user?.posts.push(created._id);
+    user?.save();
 
     return created;
   },
@@ -32,34 +33,36 @@ const Mutation: MutationResolvers = {
     const userId = getUserId(request);
 
     if (
-      post.published ||
-      (userId !== String(post.author._id) && post.author.role === "USER")
+      post?.published ||
+      (userId !== String(post?.author._id) && post?.author.role === "USER")
     )
       throw new Error("You can't edit this post");
-
+    // @ts-ignore
     return await Post.findByIdAndUpdate(id, rest, { new: true });
   },
   deletePost: async (_parent, { id }, { request }) => {
     const post = await Post.findByIdAndDelete(id).populate("author");
     const userId = getUserId(request);
 
-    if (String(post.author._id) !== userId && post.author.role === "USER")
+    if (String(post?.author._id) !== userId && post?.author.role === "USER")
       throw new Error("You can't delete this post");
 
-    return post;
+    return post!;
   },
   vote: async (_parent, { id }, { request, pubsub }) => {
     const post = await Post.findById(id);
-    const userId = getUserId(request);
+    if (!post) throw new Error("Something went wrong");
 
+    const userId = getUserId(request);
     post.votes.includes(userId)
       ? post.votes.splice(post.votes.indexOf(userId), 1)
       : post.votes.push(userId);
 
+    post.votes = [...new Set(post.votes)];
+
     post.save();
 
-    const vote = post.votes.find(vote => String(vote) === userId);
-    const newVote = { userId: String(vote) };
+    const newVote = { userId, postId: post._id };
 
     pubsub.publish("NEW_VOTE", { newVote });
     return newVote;
@@ -68,7 +71,7 @@ const Mutation: MutationResolvers = {
     const post = await Post.findById(id).populate("author");
     const userId = getUserId(request);
 
-    if (String(post.author._id) !== userId && post.author.role === "USER")
+    if (String(post?.author._id) !== userId && post?.author.role === "USER")
       throw new Error("You can't publish this post");
 
     const updatedPost = await Post.findByIdAndUpdate(
@@ -81,7 +84,7 @@ const Mutation: MutationResolvers = {
     );
 
     pubsub.publish("NEW_POST", { newPost: updatedPost });
-    return updatedPost;
+    return updatedPost!;
   }
 };
 

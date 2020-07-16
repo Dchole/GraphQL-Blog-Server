@@ -6,7 +6,7 @@ export const createDraft = async (
       title: string;
       content: string;
       author: string;
-      image?: string | Buffer | ArrayBuffer;
+      image?: string | Buffer | ArrayBuffer | null;
     },
     "title" | "content" | "author" | "image"
   >

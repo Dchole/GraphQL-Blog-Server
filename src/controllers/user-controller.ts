@@ -7,8 +7,9 @@ export const createUser = async (
     fullName: string;
     email: string;
     password: string;
-    bio?: string;
-    role?: Role;
+    image?: string | Buffer | ArrayBuffer | null;
+    bio?: string | null;
+    role?: Role | null;
   }>
 ) => {
   const { role, ...rest } = data;
