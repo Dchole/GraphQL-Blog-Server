@@ -49,6 +49,28 @@ const Query: QueryResolvers = {
     return await Post.find({ author: userId, published: false }).populate(
       "author"
     );
+  },
+  tags: async (_parent, _args, _ctx) => {
+    const posts = await Post.find();
+    // @ts-ignore
+    const allTags = posts?.map(post => post.tags).flat();
+
+    interface ICount {
+      [key: string]: number;
+    }
+
+    const count: ICount = allTags.reduce((acc, curr) => {
+      if (!acc[curr]) acc[curr] = 1;
+      else acc[curr] += 1;
+      return acc;
+    }, {});
+
+    const sorted = Object.entries(count)
+      .sort((a, b) => b[1] - a[1])
+      // @ts-ignore
+      .flat();
+
+    return [...sorted].filter(tag => typeof tag === "string");
   }
 };
 

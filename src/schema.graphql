@@ -12,6 +12,8 @@ type Query {
     skip: Int!
     limit: Int!
   ): [Post!]!
+  tags: [String!]!
+  relatingPosts(tags: [String!]!): [Post!]!
 }
 
 type Mutation {

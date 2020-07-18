@@ -106,6 +106,7 @@ export type Query = {
   post: Post;
   drafts: Array<Post>;
   posts: Array<Post>;
+  tags: Array<Scalars['String']>;
 };
 
 
@@ -116,7 +117,7 @@ export type QueryLoginArgs = {
 
 
 export type QueryUserArgs = {
-  id: Scalars['ID'];
+  id?: Maybe<Scalars['ID']>;
 };
 
 
@@ -331,11 +332,12 @@ export type PostResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   login?: Resolver<ResolversTypes['AuthPayload'], ParentType, ContextType, RequireFields<QueryLoginArgs, 'email' | 'password'>>;
-  user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, never>>;
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   post?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<QueryPostArgs, 'id'>>;
   drafts?: Resolver<Array<ResolversTypes['Post']>, ParentType, ContextType>;
   posts?: Resolver<Array<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<QueryPostsArgs, 'skip' | 'limit'>>;
+  tags?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
 };
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {

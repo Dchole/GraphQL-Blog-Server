@@ -19,6 +19,7 @@ const PostSchema = new Schema(
       type: Boolean,
       default: false
     },
+    tags: [String],
     publishedDate: Date,
     author: {
       type: Schema.Types.ObjectId,
@@ -29,6 +30,38 @@ const PostSchema = new Schema(
       {
         type: Schema.Types.ObjectId,
         ref: "User"
+      }
+    ],
+    comments: [
+      {
+        content: {
+          type: String,
+          max: 255
+        },
+        author: {
+          type: Schema.Types.ObjectId,
+          ref: "User"
+        },
+        publishedDate: {
+          type: Date,
+          default: Date.now
+        },
+        replies: [
+          {
+            content: {
+              type: String,
+              max: 255
+            },
+            author: {
+              type: Schema.Types.ObjectId,
+              ref: "User"
+            },
+            publishedDate: {
+              type: Date,
+              default: Date.now
+            }
+          }
+        ]
       }
     ]
   },
