@@ -131,6 +131,7 @@ export type QueryPostsArgs = {
   author?: Maybe<Scalars['ID']>;
   currentUser?: Maybe<Scalars['Boolean']>;
   sortBy?: Maybe<Sort>;
+  relating?: Maybe<Array<Maybe<Scalars['String']>>>;
   skip: Scalars['Int'];
   limit: Scalars['Int'];
 };

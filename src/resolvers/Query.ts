@@ -35,6 +35,8 @@ const Query: QueryResolvers = {
             published: true,
             author: { _id: userId }
           }
+        : args.relating
+        ? { tags: { $in: args.relating }, published: true }
         : { published: true }
     )
       .populate("author")
