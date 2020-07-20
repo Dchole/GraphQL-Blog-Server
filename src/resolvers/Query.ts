@@ -53,7 +53,7 @@ const Query: QueryResolvers = {
     );
   },
   tags: async (_parent, _args, _ctx) => {
-    const posts = await Post.find();
+    const posts = await Post.find({ published: true });
     // @ts-ignore
     const allTags = posts?.map(post => post.tags).flat();
 
@@ -67,12 +67,12 @@ const Query: QueryResolvers = {
       return acc;
     }, {});
 
-    const sorted = Object.entries(count)
+    const sorted: any[] = Object.entries(count)
       .sort((a, b) => b[1] - a[1])
       // @ts-ignore
       .flat();
 
-    return [...sorted].filter(tag => typeof tag === "string");
+    return sorted.filter((tag: string | number) => typeof tag === "string");
   }
 };
 
