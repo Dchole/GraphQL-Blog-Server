@@ -23,12 +23,18 @@ type Mutation {
     password: String!
     role: Role
   ): User!
+  createDraft(
+    title: String!
+    content: String!
+    image: String
+    tags: [String!]!
+  ): Post!
   updateUser(email: String, fullName: String, image: String, bio: String): User!
-  createDraft(title: String!, content: String!, image: String): Post!
   updateDraft(id: ID!, title: String, content: String, image: String): Post!
   deletePost(id: ID!): Post!
   publish(id: ID!): Post!
   vote(id: ID!): Vote!
+  comment(id: ID!, content: String!): Comment!
 }
 
 type Subscription {
@@ -61,6 +67,7 @@ type Post {
   published: Boolean!
   votes: [ID!]!
   comments: [Comment!]!
+  commentCount: Int!
   publishedDate: String
   createdAt: String!
   updatedAt: String!
@@ -68,7 +75,8 @@ type Post {
 }
 
 type Comment {
-  author: User!
+  _id: ID!
+  author: String!
   postId: ID!
   content: String!
   publishedDate: String!

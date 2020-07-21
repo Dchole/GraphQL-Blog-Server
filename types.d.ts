@@ -18,7 +18,8 @@ export type AuthPayload = {
 
 export type Comment = {
   __typename?: 'Comment';
-  author: User;
+  _id: Scalars['ID'];
+  author: Scalars['String'];
   postId: Scalars['ID'];
   content: Scalars['String'];
   publishedDate: Scalars['String'];
@@ -28,12 +29,13 @@ export type Comment = {
 export type Mutation = {
   __typename?: 'Mutation';
   signUp: User;
-  updateUser: User;
   createDraft: Post;
+  updateUser: User;
   updateDraft: Post;
   deletePost: Post;
   publish: Post;
   vote: Vote;
+  comment: Comment;
 };
 
 
@@ -45,18 +47,19 @@ export type MutationSignUpArgs = {
 };
 
 
+export type MutationCreateDraftArgs = {
+  title: Scalars['String'];
+  content: Scalars['String'];
+  image?: Maybe<Scalars['String']>;
+  tags: Array<Scalars['String']>;
+};
+
+
 export type MutationUpdateUserArgs = {
   email?: Maybe<Scalars['String']>;
   fullName?: Maybe<Scalars['String']>;
   image?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['String']>;
-};
-
-
-export type MutationCreateDraftArgs = {
-  title: Scalars['String'];
-  content: Scalars['String'];
-  image?: Maybe<Scalars['String']>;
 };
 
 
@@ -82,6 +85,12 @@ export type MutationVoteArgs = {
   id: Scalars['ID'];
 };
 
+
+export type MutationCommentArgs = {
+  id: Scalars['ID'];
+  content: Scalars['String'];
+};
+
 export type Post = {
   __typename?: 'Post';
   _id: Scalars['ID'];
@@ -92,6 +101,7 @@ export type Post = {
   published: Scalars['Boolean'];
   votes: Array<Scalars['ID']>;
   comments: Array<Comment>;
+  commentCount: Scalars['Int'];
   publishedDate?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -267,9 +277,9 @@ export type ResolversTypes = {
   Post: ResolverTypeWrapper<Post>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Comment: ResolverTypeWrapper<Comment>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   Role: Role;
   Sort: Sort;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
   Mutation: ResolverTypeWrapper<{}>;
   Vote: ResolverTypeWrapper<Vote>;
   Subscription: ResolverTypeWrapper<{}>;
@@ -297,7 +307,8 @@ export type AuthPayloadResolvers<ContextType = any, ParentType extends Resolvers
 };
 
 export type CommentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = {
-  author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  author?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   postId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   publishedDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -307,12 +318,13 @@ export type CommentResolvers<ContextType = any, ParentType extends ResolversPare
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   signUp?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationSignUpArgs, 'fullName' | 'email' | 'password'>>;
+  createDraft?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<MutationCreateDraftArgs, 'title' | 'content' | 'tags'>>;
   updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateUserArgs, never>>;
-  createDraft?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<MutationCreateDraftArgs, 'title' | 'content'>>;
   updateDraft?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<MutationUpdateDraftArgs, 'id'>>;
   deletePost?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<MutationDeletePostArgs, 'id'>>;
   publish?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<MutationPublishArgs, 'id'>>;
   vote?: Resolver<ResolversTypes['Vote'], ParentType, ContextType, RequireFields<MutationVoteArgs, 'id'>>;
+  comment?: Resolver<ResolversTypes['Comment'], ParentType, ContextType, RequireFields<MutationCommentArgs, 'id' | 'content'>>;
 };
 
 export type PostResolvers<ContextType = any, ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']> = {
@@ -324,6 +336,7 @@ export type PostResolvers<ContextType = any, ParentType extends ResolversParentT
   published?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   votes?: Resolver<Array<ResolversTypes['ID']>, ParentType, ContextType>;
   comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>;
+  commentCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   publishedDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;

@@ -1,5 +1,5 @@
 import { genSalt, hash } from "bcryptjs";
-import { MutationResolvers } from "../../types";
+import { MutationResolvers, Comment } from "../../types";
 import { createUser } from "../controllers/user-controller";
 import { createDraft } from "../controllers/post-controller";
 import Post from "../models/Post-model";
@@ -85,6 +85,22 @@ const Mutation: MutationResolvers = {
 
     pubsub.publish("NEW_POST", { newPost: updatedPost });
     return updatedPost!;
+  },
+  comment: async (_parent, { id, content }, { request }) => {
+    const userId = getUserId(request);
+    const user = await User.findById(userId);
+    const post = await Post.findById(id);
+
+    if (!post || !user) throw new Error("Something went wrong");
+
+    // @ts-ignore
+    post.comments.push({
+      author: user.fullName,
+      content
+    });
+    post.save();
+
+    return post.comments[post.comments.length - 1];
   }
 };
 

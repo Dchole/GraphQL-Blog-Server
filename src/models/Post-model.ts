@@ -38,10 +38,7 @@ const PostSchema = new Schema(
           type: String,
           max: 255
         },
-        author: {
-          type: Schema.Types.ObjectId,
-          ref: "User"
-        },
+        author: String,
         publishedDate: {
           type: Date,
           default: Date.now
@@ -52,10 +49,7 @@ const PostSchema = new Schema(
               type: String,
               max: 255
             },
-            author: {
-              type: Schema.Types.ObjectId,
-              ref: "User"
-            },
+            author: String,
             publishedDate: {
               type: Date,
               default: Date.now

@@ -44,7 +44,10 @@ const Query: QueryResolvers = {
       .skip(args.skip)
       .limit(args.limit);
 
-    return posts;
+    return posts.map(post => {
+      post.commentCount = post.comments.length;
+      return post;
+    });
   },
   drafts: async (_parent, _args, context) => {
     const userId = getUserId(context);
