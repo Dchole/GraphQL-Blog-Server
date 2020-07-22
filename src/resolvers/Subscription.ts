@@ -9,8 +9,10 @@ const Subscription: SubscriptionResolvers = {
     )
   },
   newComment: {
-    subscribe: (_parent, { id }, { pubsub }) =>
-      pubsub.asyncIterator("NEW_COMMENT")
+    subscribe: withFilter(
+      (_parent, _args, { pubsub }) => pubsub.asyncIterator("NEW_COMMENT"),
+      (payload, variables) => String(payload.newComment.postId) === variables.id
+    )
   }
 };
 

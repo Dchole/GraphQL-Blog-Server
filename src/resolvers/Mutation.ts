@@ -86,7 +86,11 @@ const Mutation: MutationResolvers = {
     pubsub.publish("NEW_POST", { newPost: updatedPost });
     return updatedPost!;
   },
-  comment: async (_parent, { id, content }, { request }) => {
+  comment: async (
+    _parent,
+    { id, content: argContent },
+    { request, pubsub }
+  ) => {
     const userId = getUserId(request);
     const user = await User.findById(userId);
     const post = await Post.findById(id);
@@ -96,11 +100,23 @@ const Mutation: MutationResolvers = {
     // @ts-ignore
     post.comments.push({
       author: user.fullName,
-      content
+      content: argContent
     });
     post.save();
 
-    return post.comments[post.comments.length - 1];
+    const { _id, author, content, publishedDate, replies } = post.comments[
+      post.comments.length - 1
+    ];
+    const newComment = {
+      _id,
+      author,
+      content,
+      publishedDate,
+      replies,
+      postId: id
+    };
+    pubsub.publish("NEW_COMMENT", { newComment });
+    return newComment;
   }
 };
 
